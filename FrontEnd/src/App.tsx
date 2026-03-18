@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/verify',{
+        const res = await fetch(`${import.meta.env.VITE_BackEnd_API_URL}/api/auth/verify`,{
           credentials: 'include'
         });
 

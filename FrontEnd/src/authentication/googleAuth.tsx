@@ -4,7 +4,7 @@ export const GoogleSignIn = async (accessToken: string) => {
     const { setUser } = useAuthStore.getState(); 
 
     try{
-        const response = await fetch('http://localhost:5000/api/auth/google', {
+        const response = await fetch(`${import.meta.env.BackEnd_API_URL}/api/auth/google`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             credentials: 'include',

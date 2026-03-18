@@ -112,6 +112,7 @@ const TransactionPage: React.FC<TransactionPageProps> = ({ type }) => {
   // ── Fetch on mount / type change ──
   useEffect(() => {
     fetchTransactions(type);
+    console.log(transactions)
   }, [type]);
 
   // ── Date navigation state ──
@@ -274,6 +275,7 @@ const TransactionPage: React.FC<TransactionPageProps> = ({ type }) => {
   // const month2 = new Date(dateTo).toLocaleDateString('default', {'month': 'long'});
 
   // console.log(`${year1} ${date1} ${month1} - ${date2} ${month2}`)
+  console.log(transactions)
 
   return (
     <div className="min-h-screen bg-gray-50">
