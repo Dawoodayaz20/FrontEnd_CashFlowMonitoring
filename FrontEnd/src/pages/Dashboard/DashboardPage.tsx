@@ -6,18 +6,6 @@ import type { Transaction } from "../../../types";
 import useSettingsStore from "../../store/useSettingsStore";
 import useFormatters from "../../useFormatters";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface TransactionForm {
-  type: "income" | "expense";
-  amount: string;
-  category: string;
-  date: string;
-  note: string;
-  isRecurring: boolean;
-  frequency: "weekly" | "monthly" | "yearly";
-  endDate: string;
-}
-
 interface transactionDataInt {
   month: string,
   income: number,
