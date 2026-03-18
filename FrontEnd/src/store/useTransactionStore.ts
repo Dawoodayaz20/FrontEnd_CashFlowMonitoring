@@ -40,7 +40,7 @@ const useTransactionStore = create<TransactionState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const url = type ? `${API_URL}?type=${type}` : API_URL;
-      const res = await fetch(url, { credentials: 'include' });
+      const res = await fetch(url, { credentials: 'include'});
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message);
@@ -116,7 +116,7 @@ const useTransactionStore = create<TransactionState>((set, get) => ({
 
 export const clearAllTransactions = async (password: string) => {
   try {
-    const response = await fetch('http://localhost:5000/api/transactions/clear-all', {
+    const response = await fetch(`${import.meta.env.VITE_BackEnd_API_URL}api/transactions/clear-all'`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
