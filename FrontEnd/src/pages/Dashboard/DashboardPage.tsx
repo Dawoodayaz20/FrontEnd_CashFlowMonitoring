@@ -130,7 +130,7 @@ const Dashboard: React.FC = () => {
     fetchTransactions();
   }, [])
 
-  const handleTransactionSubmit = (data: TransactionForm) => {
+  const handleTransactionSubmit = () => {
     // console.log("New transaction:", data);
     // → wire to useTransactionStore later
   };

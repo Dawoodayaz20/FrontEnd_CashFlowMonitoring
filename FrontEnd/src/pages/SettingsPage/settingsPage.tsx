@@ -224,12 +224,6 @@ const SettingsPage: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  
-
-  const incomes = transactions.filter((tx) => tx.amount > 100, 0)
-  const months = transactions.map((tx) => new Date(tx.date).getMonth() + 1)
-  // console.log(months)
-
   const totalBudget = Object.values(budgets).reduce((s, v) => s + v, 0);
 
   return (
