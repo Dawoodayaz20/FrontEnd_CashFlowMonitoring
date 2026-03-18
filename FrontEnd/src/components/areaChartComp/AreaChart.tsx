@@ -20,17 +20,6 @@ interface AreaChartCompProps {
   data?: DataPoint[];
 }
 
-// ─── Default Static Data (replace with real data later) ───────────────────────
-
-const defaultData: DataPoint[] = [
-  { month: "Jan",   income: 3000, expense: 1800 },
-  { month: "Feb",   income: 4000, expense: 2200 },
-  { month: "Mar",   income: 2000, expense: 1500 },
-  { month: "Apr",   income: 1500, expense: 1300 },
-  { month: "May",   income: 1800, expense: 900  },
-  { month: "Jun",   income: 2400, expense: 1100 },
-];
-
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
 
 interface TooltipEntry {
@@ -97,7 +86,7 @@ const AreaChartComp: React.FC<AreaChartCompProps> = ({ data }) => {
             tick={{ fontSize: 12, fill: "#94a3b8" }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+            tickFormatter={(v) => `$${v}`} 
             width={45}
           />
 
