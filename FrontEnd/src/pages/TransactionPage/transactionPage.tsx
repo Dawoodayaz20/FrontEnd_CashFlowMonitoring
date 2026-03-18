@@ -262,20 +262,6 @@ const TransactionPage: React.FC<TransactionPageProps> = ({ type }) => {
         endDate: editingTx.recurring.endDate?.split("T")[0] ?? "",
       }
     : undefined;
-    
-  // console.log(new Date(year, month - 1).toLocaleDateString('default', {'month': 'short'}));
-  // console.log(month)
-  // console.log(new Date(dateTo).toLocaleDateString('default', {'month': 'long'}))
-  // console.log(new Date(dateFrom).getFullYear())
-
-  // const year1 = (new Date(dateFrom).getFullYear())
-  // const month1 = new Date(dateFrom).toLocaleDateString('default', {'month': 'long'});
-  // const date1 = new Date(dateFrom).toLocaleDateString('default', {'day': "numeric"});
-  // const date2 = new Date(dateTo).toLocaleDateString('default', {'day': "numeric"});
-  // const month2 = new Date(dateTo).toLocaleDateString('default', {'month': 'long'});
-
-  // console.log(`${year1} ${date1} ${month1} - ${date2} ${month2}`)
-  console.log(transactions)
 
   return (
     <div className="min-h-screen bg-gray-50">

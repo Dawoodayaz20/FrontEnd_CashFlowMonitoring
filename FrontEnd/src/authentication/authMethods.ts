@@ -1,5 +1,4 @@
 import useAuthStore from "../store/useAuthStore"
-// import { useNavigate } from 'react-router-dom';
 
 export const SignIn = async (email:string, password: string, navigate: any) => {
   const { setUser } = useAuthStore.getState();

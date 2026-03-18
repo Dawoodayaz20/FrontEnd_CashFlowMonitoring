@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import AreaChartComp from "../../components/areaChartComp/AreaChart";
 import AddTransactionModal from "../../components/transactionModal/addTransaction";
 import useTransactionStore from "../../store/useTransactionStore";
@@ -118,7 +117,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ label, value, accent = "neutr
 const Dashboard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   // const navigate = useNavigate();
-  const { transactions, fetchTransactions, loading} = useTransactionStore();
+  const { transactions, fetchTransactions } = useTransactionStore();
   const { settings } = useSettingsStore();
   const { formatCurrency, formatDate } = useFormatters();
 
@@ -162,25 +161,10 @@ const Dashboard: React.FC = () => {
 
   return months;
   };
-
-  // console.log(chartData(transactions))
   
   const recentTransactions = transactions
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .slice(0,5);
-
-  // console.log(transactions.map((a) => {
-  //   return new Date(a.date).toLocaleString('default', { month: 'short' })
-  // }));
-
-  const monthChart = transactions.map((a) => {
-    return new Date(a.date).toLocaleString('default', { month: 'short' })
-  });
-  
-  // const Data : DataPoint[] = (transactions) => {
-  //   const month = transactions.map((a) => {
-  //   return new Date(a.date).toLocaleString('default', { month: 'short' })
-  // })
 
   const totalIncome : number = recentTransactions
   .filter((tx) => tx.type === 'income')
@@ -194,9 +178,6 @@ const Dashboard: React.FC = () => {
 
   const AvgIncome = (amount: number) : number => Math.round(amount/12);
   const AvgExpense = (amount: number) : number => Math.round(amount/12);
-  
-  // console.log(totalIncome)
-  // console.log(AvgIncome(totalIncome))
 
   return (
     <div className="flex w-full h-screen bg-gray-50 font-sans">
