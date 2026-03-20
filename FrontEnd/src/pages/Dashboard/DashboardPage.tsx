@@ -336,34 +336,6 @@ const Dashboard: React.FC = () => {
             ))}
           </div>
 
-          {/* ── What If Simulator ──────────────────────────────────────────── */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-            <div className="mb-5">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">What If Simulator</h2>
-              <p className="text-gray-600 text-sm">Adjust variables to see how your cash flow would change</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              {[
-                { placeholder: "Rent increase ($)", label: "Rent Change" },
-                { placeholder: "Income change ($)",  label: "Income Change" },
-                { placeholder: "New expense ($)",    label: "New Expense" },
-              ].map((field) => (
-                <div key={field.label}>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
-                    {field.label}
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">$</span>
-                    <input
-                      type="number"
-                      placeholder="0.00"
-                      className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 transition"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
             <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
               <div className="mb-5">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">What If Simulator</h2>
@@ -396,7 +368,6 @@ const Dashboard: React.FC = () => {
 
               <SimulatorChart data={simulatorData} />
             </div>
-          </div>
 
         </div>{/* end page body */}
       </main>
