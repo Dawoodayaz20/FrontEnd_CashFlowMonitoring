@@ -5,6 +5,7 @@ import useTransactionStore from "../../store/useTransactionStore";
 import type { Transaction } from "../../../types";
 import useSettingsStore from "../../store/useSettingsStore";
 import useFormatters from "../../useFormatters";
+import SimulatorChart from "../../components/simulatorChart/simulateChart";
 
 interface transactionDataInt {
   month: string,
@@ -104,10 +105,13 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ label, value, accent = "neutr
 
 const Dashboard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  // const navigate = useNavigate();
   const { transactions, fetchTransactions } = useTransactionStore();
   const { settings } = useSettingsStore();
   const { formatCurrency, formatDate } = useFormatters();
+  const [rentChange, setRentChange] = useState<number>(0);
+  const [incomeChange, setIncomeChange] = useState<number>(0);
+  const [newExpense, setNewExpense] = useState<number>(0);
+
 
   const budgetStatus = useMemo(
     () => buildBudgetStatus(transactions, settings.budgetLimits),
@@ -166,6 +170,52 @@ const Dashboard: React.FC = () => {
 
   const AvgIncome = (amount: number) : number => Math.round(amount/12);
   const AvgExpense = (amount: number) : number => Math.round(amount/12);
+
+  const avgMonthlyIncome = useMemo(() => {
+    const totals: Record<string, number> = {};
+    transactions.forEach((tx) => {
+      if (tx.type !== "income") return;
+      const key = new Date(tx.date).toLocaleString("default", { month: "short", year: "numeric" });
+      totals[key] = (totals[key] ?? 0) + tx.amount;
+    });
+    const values = Object.values(totals);
+    return values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  }, [transactions]);
+
+  const avgMonthlyExpense = useMemo(() => {
+    const totals: Record<string, number> = {};
+    transactions.forEach((tx) => {
+      if (tx.type !== "expense") return;
+      const key = new Date(tx.date).toLocaleString("default", { month: "short", year: "numeric" });
+      totals[key] = (totals[key] ?? 0) + tx.amount;
+    });
+    const values = Object.values(totals);
+    return values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  }, [transactions]);
+
+  const simulatorData = useMemo(() => {
+    const baselineNet = avgMonthlyIncome - avgMonthlyExpense;
+    const simulatedNet = (avgMonthlyIncome + incomeChange) - (avgMonthlyExpense + rentChange + newExpense);
+
+    const baselineGrowthRate = avgMonthlyIncome > 0
+      ? (baselineNet / avgMonthlyIncome) * 0.1
+      : 0.01;
+
+    const simulatedGrowthRate = (avgMonthlyIncome + incomeChange) > 0
+      ? (simulatedNet / (avgMonthlyIncome + incomeChange)) * 0.1
+      : 0.01;
+
+      return Array.from({ length: 6 }, (_, i) => {
+        const d = new Date();
+        d.setMonth(d.getMonth() + i);
+        return {
+          month: d.toLocaleString("default", { month: "short" }),
+          baseline: Math.round(baselineNet * Math.pow(1 + baselineGrowthRate, i)),
+          simulated: Math.round(simulatedNet * Math.pow(1 + simulatedGrowthRate, i)),
+        };
+      });
+    }, [avgMonthlyIncome, avgMonthlyExpense, rentChange, incomeChange, newExpense]);
+
 
   return (
     <div className="flex w-full h-screen bg-gray-50 font-sans">
@@ -314,9 +364,37 @@ const Dashboard: React.FC = () => {
                 </div>
               ))}
             </div>
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+              <div className="mb-5">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">What If Simulator</h2>
+                <p className="text-gray-600 text-sm">Adjust variables to see how your cash flow would change</p>
+              </div>
 
-            <div className="h-48 flex items-center justify-center rounded-xl border border-dashed border-gray-200 text-gray-300 font-semibold text-sm">
-              Updated forecast will appear here
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {[
+                  { label: "Rent Change",    value: rentChange,    setter: setRentChange },
+                  { label: "Income Change",  value: incomeChange,  setter: setIncomeChange },
+                  { label: "New Expense",    value: newExpense,    setter: setNewExpense },
+                ].map((field) => (
+                  <div key={field.label}>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
+                      {field.label}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">$</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={field.value === 0 ? "" : field.value}
+                        onChange={(e) => field.setter(Number(e.target.value) || 0)}
+                        className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 transition"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <SimulatorChart data={simulatorData} />
             </div>
           </div>
 
