@@ -7,6 +7,7 @@ import TransactionPage from './pages/TransactionPage/transactionPage';
 import ForecastPage from './pages/ForecastPage/forecastPage';
 import SettingsPage from './pages/SettingsPage/settingsPage';
 import ProfilePage from './pages/ProfilePage/profilePage';
+import FlowMonitorPage from './pages/FlowManagerPage/flowManager';
 import AppLayout from './AppLayout';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './store/useAuthStore';
@@ -46,9 +47,10 @@ function App() {
             <Route path="/income"element={<TransactionPage type="income" />} />
             <Route path="/expense"element={<TransactionPage type="expense" />} />
             <Route path="/forecast"  element={<ForecastPage />} />
+            <Route path="flowAI" element={<FlowMonitorPage />}/>
             <Route path="/settings"  element={<SettingsPage />} />
             <Route path="/profile"   element={<ProfilePage />} />
-            <Route path="*"element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
           </Route>
         </Routes>
   )
