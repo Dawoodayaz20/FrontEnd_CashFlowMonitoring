@@ -66,7 +66,9 @@ const FlowMonitorPage: React.FC = () => {
       timestamp: new Date(),
     },
   ]);
-  const userID = user?.id || ""
+  const userID = user?.id || "";
+  const userName = user?.name || "";
+  const email = user?.email || "";
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -96,7 +98,7 @@ const FlowMonitorPage: React.FC = () => {
 
     try {
     // 2. Call API (Pass 'content' directly, not 'input')
-    const responseData = await getResponse(content, userID);
+    const responseData = await getResponse(content, userID, userName, email);
 
     // 3. Construct Bot Message from response
     const botMsg: Message = {
