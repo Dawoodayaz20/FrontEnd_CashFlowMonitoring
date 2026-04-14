@@ -4,7 +4,7 @@ export const SignIn = async (email:string, password: string, navigate: any) => {
   const { setUser } = useAuthStore.getState();
 
   try{
-    const response = await fetch(`${import.meta.env.VITE_BackEnd_API_URL}/api/auth/login`, {
+    const response = await fetch(`/api/auth/login`, {
       method:'POST',
       headers:{ 'Content-Type': 'application/json' },
       credentials:'include',
@@ -27,7 +27,7 @@ export const SignIn = async (email:string, password: string, navigate: any) => {
 export const SignUp = async (name : string, email : string, pass : string, navigate: any) => {
   const { setUser } = useAuthStore.getState();
   try {
-    const response = await fetch(`${import.meta.env.VITE_BackEnd_API_URL}/api/auth/register`, {
+    const response = await fetch(`/api/auth/register`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       credentials:'include',
@@ -56,7 +56,7 @@ export const SignOut = async(navigate:any) => {
   const { clearUser } = useAuthStore.getState();
 
   try{
-    await fetch(`${import.meta.env.VITE_BackEnd_API_URL}/api/auth/logout`, {
+    await fetch(`/api/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -78,7 +78,7 @@ export const updateProfile = async(
   const { setUser } = useAuthStore.getState();
 
   try{
-    const response = await fetch(`${import.meta.env.VITE_BackEnd_API_URL}/api/auth/profile`, {
+    const response = await fetch(`/api/auth/profile`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json' },
       credentials: 'include', // Send JWT cookie
@@ -106,7 +106,7 @@ export const deleteAccount = async (password: string, navigate: any) => {
   const { clearUser } = useAuthStore.getState();
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_BackEnd_API_URL}/api/auth/account`, {
+    const response = await fetch(`/api/auth/account`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
