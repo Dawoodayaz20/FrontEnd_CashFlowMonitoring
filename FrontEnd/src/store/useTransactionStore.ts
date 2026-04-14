@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { Transaction, TransactionForm, TxType } from '../../types';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/transactions`;
+const API_URL = `api/transactions`;
 
 // ─── Helper: shape form data → API payload ────────────────────────────────────
 const toPayload = (form: TransactionForm) => ({
