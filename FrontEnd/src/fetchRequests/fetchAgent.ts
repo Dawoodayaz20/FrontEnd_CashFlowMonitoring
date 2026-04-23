@@ -1,9 +1,3 @@
-// type PersonalInfo = {
-//     id: string,
-//     name: string,
-//     email: string,
-// }
-
 export const getResponse = async (text: string, userID: string, userName: string, email: string) => {
 
     try{
