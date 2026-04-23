@@ -1,16 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import useAuthStore from "../../store/useAuthStore";
-import useTransactionStore from "../../store/useTransactionStore";
 import { getResponse } from "../../fetchRequests/fetchAgent";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface Message {
-  id: string;
-  role: "assistant" | "user";
-  content: string;
-  timestamp: Date;
-}
+import type { Message } from "./ChatContext";
+import { useChat } from "./ChatContext";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -52,20 +44,19 @@ const QuickAction: React.FC<{ label: string; onClick: () => void }> = ({ label, 
   </button>
 );
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 
-const FlowMonitorPage: React.FC = () => {
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+// {
+//       id: "1",
+//       role: "assistant",
+//       content: `Hello ${user?.name || "there"}! I'm your Flow Manager. I can help you analyze your ${transactions.length} transactions or forecast your budget. What's on your mind?`,
+//       timestamp: new Date(),
+//     },
+const FlowManagerPage: React.FC = () => {
   const { user } = useAuthStore();
-  const { transactions } = useTransactionStore();
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content: `Hello ${user?.name || "there"}! I'm your Flow Manager. I can help you analyze your ${transactions.length} transactions or forecast your budget. What's on your mind?`,
-      timestamp: new Date(),
-    },
-  ]);
+  const { messages, addMessage, text, setText } = useChat();
+
   const userID = user?.id || "";
   const userName = user?.name || "";
   const email = user?.email || "";
@@ -90,14 +81,14 @@ const FlowMonitorPage: React.FC = () => {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
+    addMessage(userMsg);
+    setText("");
 
-    // const botMsg : Message = await getResponse(input, userID);
+    // const botMsg : Message = await getResponse(text, userID);
     // setMessages((prev) => [...prev, botMsg]);
 
     try {
-    // 2. Call API (Pass 'content' directly, not 'input')
+    // 2. Call API (Pass 'content' directly, not 'text')
     const responseData = await getResponse(content, userID, userName, email);
 
     // 3. Construct Bot Message from response
@@ -108,7 +99,7 @@ const FlowMonitorPage: React.FC = () => {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, botMsg]);
+    addMessage(botMsg);
   } catch (error) {
     console.error("Failed to get bot response:", error);
   }
@@ -148,14 +139,14 @@ const FlowMonitorPage: React.FC = () => {
 
           {/* Input Bar */}
           <form 
-            onSubmit={(e) => { e.preventDefault(); handleSendMessage(input); }}
+            onSubmit={(e) => { e.preventDefault(); handleSendMessage(text); }}
             className="relative flex items-center gap-3"
           >
             <div className="relative flex-1">
               <input
                 type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
                 placeholder="Ask Flow Manager something..."
                 className="w-full pl-5 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all placeholder:text-gray-400"
               />
@@ -178,4 +169,4 @@ const FlowMonitorPage: React.FC = () => {
   );
 };
 
-export default FlowMonitorPage;
+export default FlowManagerPage;
