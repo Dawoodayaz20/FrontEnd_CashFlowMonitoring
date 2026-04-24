@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import useAuthStore from "../../store/useAuthStore";
-import useTransactionStore from "../../store/useTransactionStore";
 
 export type Message = {
   id: string;
@@ -25,12 +24,11 @@ export const ChatContext = createContext<ChatContext | undefined>(undefined);
 
 export const ChatContextProvider = ({ children } : Providertype )  => {
   const { user } = useAuthStore();
-  const { transactions } = useTransactionStore();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       role: "assistant",
-      content: `Hello ${user?.name || "there"}! I'm your Flow Manager. I can help you analyze your ${transactions.length} transactions or forecast your budget. What's on your mind?`,
+      content: `Hello ${user?.name || "there"}! I'm your Flow Manager. I can help you analyze your transactions or forecast your budget. What's on your mind?`,
       timestamp: new Date(),
     },
   ]);
