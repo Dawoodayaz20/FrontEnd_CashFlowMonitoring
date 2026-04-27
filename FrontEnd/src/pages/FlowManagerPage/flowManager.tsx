@@ -46,7 +46,7 @@ const QuickAction: React.FC<{ label: string; onClick: () => void }> = ({ label, 
  
 const FlowManagerPage: React.FC = () => {
   const { user } = useAuthStore();
-  const { messages, addMessage, text, setText, activeSessionId, updateSessionTitle, createNewSession } = useChat();
+  const { messages, addMessage, text, setText, activeSessionId, updateSessionTitle } = useChat();
  
   const userID = user?.id || "";
   const userName = user?.name || "";
