@@ -84,9 +84,10 @@ const FlowManagerPage: React.FC = () => {
         updateSessionTitle(activeSessionId, title);
       });
     }
- 
+    
+
     try {
-      const responseData = await getResponse(content, userID, userName, email);
+      const responseData = await getResponse(content, userID, userName, email, activeSessionId);
  
       if (!responseData.success) {
           addMessage({
@@ -111,6 +112,7 @@ const FlowManagerPage: React.FC = () => {
         console.error(`There was an error connecting to Server: ${err}`)
       }
     };
+    console.log(activeSessionId)
  
     if (!activeSessionId) return null;
  
