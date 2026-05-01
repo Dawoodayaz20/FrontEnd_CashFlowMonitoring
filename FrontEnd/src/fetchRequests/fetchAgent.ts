@@ -1,23 +1,3 @@
-
-// export const generateTitle = async (userMessage: string, userID: string, userName: string, email: string): Promise<string> => {
-//     try {
-//       const response = await fetch(`${import.meta.env.VITE_FLOWAGENT_API}`, {
-//         method: "POST",
-//         headers: { "Content-type": "application/json" },
-//         body: JSON.stringify({
-//           question: `Generate a short 4-6 word title for a chat that starts with: "${userMessage}". Reply with only the title, no punctuation.`,
-//           userID,
-//           user_name: userName,
-//           email,
-//         }),
-//       });
-//       const data = await response.json();
-//       return typeof data === "string" ? data.trim() : "New chat";
-//     } catch {
-//       return userMessage.slice(0, 30);
-//     }
-//   };
-
 export const getResponse = async (text: string, userID: string, userName: string, email: string) => {
 
     try{
@@ -27,17 +7,17 @@ export const getResponse = async (text: string, userID: string, userName: string
         body: JSON.stringify({ question: text, userID, user_name: userName, email })
     })
 
+    const data = await response.json();
+
     if (!response.ok){
-        alert("There was an error connecting to Server!");
+        return { success: false, error: data.error, message: data.message };
     }
 
-    const data = await response.json();
     console.log("Response:", data);
-    return data;
+    return { success: true, data: data };
     }
     catch(err){
-        console.log('There was an error connecting to Server:', err);
-        return err;
+        return { success: false, error: "network_error", message: "Unable to reach the server." };;
     }
 }
 
