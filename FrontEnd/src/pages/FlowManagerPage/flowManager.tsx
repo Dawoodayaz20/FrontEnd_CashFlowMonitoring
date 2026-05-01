@@ -88,20 +88,31 @@ const FlowManagerPage: React.FC = () => {
     try {
       const responseData = await getResponse(content, userID, userName, email);
  
-      const botMsg: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: responseData,
-        timestamp: new Date(),
-      };
+      if (!responseData.success) {
+          addMessage({
+              id: uuidv4(),
+              role: "assistant",
+              content: responseData.error === "rate_limit"
+                  ? "⚠️ API quota exceeded. Please check your billing or try again later."
+                  : `❌ ${responseData.message}`,
+              timestamp: new Date(),
+          });
+          return;
+      }
+
+      addMessage({
+          id: uuidv4(),
+          role: "assistant",
+          content: responseData.data,
+          timestamp: new Date(),
+      });
+    
+      } catch(err){
+        console.error(`There was an error connecting to Server: ${err}`)
+      }
+    };
  
-      addMessage(botMsg);
-    } catch (error) {
-      console.error("Failed to get bot response:", error);
-    }
-  };
- 
-  if (!activeSessionId) return null;
+    if (!activeSessionId) return null;
  
   return (
     <div className="flex flex-col h-screen bg-gray-50">
