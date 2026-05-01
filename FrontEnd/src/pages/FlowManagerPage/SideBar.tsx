@@ -2,7 +2,7 @@ import React from "react";
 import { useChat } from "./ChatContext";
 
 const Sidebar: React.FC = () => {
-  const { sessions, activeSessionId, createNewSession, setActiveSession } = useChat();
+  const { sessions, activeSessionId, createNewSession, setActiveSession, deleteSessionChat } = useChat();
 
   const groupSessions = () => {
     const now = new Date();
@@ -26,6 +26,11 @@ const Sidebar: React.FC = () => {
 
   const { today, yesterday, thisWeek, older } = groupSessions();
 
+  const handleDeleteChat = async (session_id: string) => {
+    console.log(session_id)
+    await deleteSessionChat(session_id)
+  }
+
   const renderGroup = (label: string, group: typeof sessions) => {
     if (group.length === 0) return null;
     return (
@@ -34,13 +39,14 @@ const Sidebar: React.FC = () => {
           {label}
         </p>
         {group.map((s) => (
-          <button
+          <div
             key={s.session_id}
             onClick={() => setActiveSession(s.session_id)}
-            className={`w-full text-left flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all ${
+            className={`w-full text-left flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all cursor-pointer ${
               activeSessionId === s.session_id
                 ? "bg-white border border-gray-200 text-gray-800 shadow-sm"
                 : "text-gray-600 hover:bg-white hover:text-gray-800"
+            
             }`}
           >
             <span
@@ -48,10 +54,19 @@ const Sidebar: React.FC = () => {
                 activeSessionId === s.session_id ? "bg-teal-500" : "bg-gray-300"
               }`}
             />
-            <span className="truncate">{s.title}</span>
+            <span className="truncate flex-1">{s.title}</span>
+            <button 
+            className="ml-auto text-gray-400 hover:text-red-500 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteChat(s.session_id); // hook this up
+            }}
+            >
+                🗑️
           </button>
-        ))}
-      </>
+          </div>
+          ))}
+        </>
     );
   };
 
