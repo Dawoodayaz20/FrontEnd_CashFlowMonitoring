@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { v4 as uuidv4 } from "uuid";
 import useAuthStore from "../../store/useAuthStore";
-import { createSession, fetchSessionMessages, fetchSessions, saveMessage, updateTitle } from "../../fetchRequests/fetchChats";
+import { createSession, fetchSessionMessages, fetchSessions, saveMessage, updateTitle, deleteSession } from "../../fetchRequests/fetchChats";
 
 export type Message = {
   id: string;
@@ -32,6 +32,7 @@ type ChatContextType = {
   createNewSession: () => void;
   setActiveSession: (session_id: string) => void;
   updateSessionTitle: (session_id: string, title: string) => void;
+  deleteSessionChat: (session_id: string) => void;
 };
 
 interface ProviderType {
@@ -52,7 +53,8 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
                 if (msgs) setMessagesMap({ [data[0].session_id]: msgs });
             });
         } else {
-            createNewSession(); // 👈 no sessions yet, create first one
+            // createNewSession(); // 👈 no sessions yet, create first one
+            console.log("NO Sessions!")
         }
     });
   }, []);
@@ -71,6 +73,7 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
 
   const createNewSession = async () => {
     const session_id = uuidv4();
+    const welcome = welcomeMessage();
     const newSession: Session = {
       session_id,
       title: "New chat",
@@ -78,6 +81,7 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
     };
 
     await createSession(session_id, "New chat");
+    await saveMessage(session_id, welcome);
 
     setSessions((prev) => [newSession, ...prev]);
     setMessagesMap((prev) => ({
@@ -85,6 +89,7 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
       [session_id]: [welcomeMessage()],
     }));
     setActiveSessionId(session_id);
+    console.log(session_id)
     setText("");
   };
 // useChat
@@ -106,15 +111,22 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
   };
 
   const updateSessionTitle = async (session_id: string, title: string) => {
-    await updateTitle(session_id, title);
     setSessions((prev) =>
       prev.map((s) => (s.session_id === session_id ? { ...s, title } : s))
     );
     await updateTitle(session_id, title);
   };
 
+  const deleteSessionChat = async (session_id: string) => {
+    await deleteSession(session_id);
+
+    const filteredSessions = sessions.filter((sess) => sess.session_id !== session_id)
+    // console.log(filteredSessions)
+    setSessions(filteredSessions);
+  }
+
   const messages = activeSessionId ? (messagesMap[activeSessionId] || []) : [];
-  console.log(messages)
+  // console.log(messages)
 
   return (
     <ChatContext.Provider
@@ -128,6 +140,7 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
         createNewSession,
         setActiveSession,
         updateSessionTitle,
+        deleteSessionChat
       }}
     >
       {children}
