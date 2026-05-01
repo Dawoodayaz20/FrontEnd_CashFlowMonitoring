@@ -1,6 +1,6 @@
 import type { Message } from "../pages/FlowManagerPage/ChatContext";
 
-// const BASE_URL = `${import.meta.env.VITE_API_URL}`
+const BASE_URL = `${import.meta.env.VITE_API_URL}`
 
 export const fetchSessions = async () => {
     try{
@@ -15,7 +15,7 @@ export const fetchSessions = async () => {
         }
 
         const sessions = await response.json();
-        console.log(sessions)
+
         return sessions
     }
     catch(err){
@@ -89,6 +89,25 @@ export const updateTitle = async (session_id: string, title: string) => {
         if(!res.ok) console.log('There was an error connecting with the server!');
 
         const response = await res.json();
+        return response;
+    } catch(err){
+        console.log("Server responded with error:", err);
+    }
+}
+
+export const deleteSession = async (session_id: string) => {
+    try{
+        const res = await fetch(`api/chat/session/${session_id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({session_id})
+        })
+
+        const response = await res.json();
+
+        if(!res.ok) console.log('There was an error connecting with the server!');
+
         return response;
     } catch(err){
         console.log("Server responded with error:", err);
