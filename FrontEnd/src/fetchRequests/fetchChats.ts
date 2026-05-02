@@ -1,7 +1,5 @@
 import type { Message } from "../pages/FlowManagerPage/ChatContext";
 
-const BASE_URL = `${import.meta.env.VITE_API_URL}`
-
 export const fetchSessions = async () => {
     try{
         const response = await fetch(`api/chat/history`, {
