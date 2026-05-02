@@ -53,7 +53,6 @@ const FlowManagerPage: React.FC = () => {
   const email = user?.email || "";
  
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isFirstMessageRef = useRef<Record<string, boolean>>({});
  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -76,15 +75,12 @@ const FlowManagerPage: React.FC = () => {
  
     addMessage(userMsg);
     setText("");
- 
-    // Auto-generate title on first user message in a session
-    if (!isFirstMessageRef.current[activeSessionId]) {
-      isFirstMessageRef.current[activeSessionId] = true;
+
+    if(messages.length === 2){
       await generateTitle(content).then((title) => {
         updateSessionTitle(activeSessionId, title);
       });
     }
-    
 
     try {
       const responseData = await getResponse(content, userID, userName, email, activeSessionId);
@@ -112,8 +108,7 @@ const FlowManagerPage: React.FC = () => {
         console.error(`There was an error connecting to Server: ${err}`)
       }
     };
-    console.log(activeSessionId)
- 
+
     if (!activeSessionId) return null;
  
   return (
