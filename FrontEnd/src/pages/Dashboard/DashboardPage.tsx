@@ -216,6 +216,12 @@ const Dashboard: React.FC = () => {
       });
     }, [avgMonthlyIncome, avgMonthlyExpense, rentChange, incomeChange, newExpense]);
 
+  const survivalMonths = useMemo(() => {
+    if (avgMonthlyExpense === 0) return "∞";
+    const months = Math.floor(totalBalance / avgMonthlyExpense);
+    return months <= 0 ? "0 months" : `${months} months`;
+  }, [totalBalance, avgMonthlyExpense]);
+
 
   return (
     <div className="flex w-full h-screen bg-gray-50 font-sans">
@@ -330,7 +336,7 @@ const Dashboard: React.FC = () => {
               { label: "Avg Income",       value: formatCurrency(AvgIncome(totalIncome)),   icon: "📊", accent: "teal"     as const },
               { label: "Avg Expenses",     value: formatCurrency(AvgExpense(totalExpense)),  icon: "🧾", accent: "rose"     as const },
               { label: "Monthly Net",      value: formatCurrency(AvgExpense(totalBalance)),  icon: "💹", accent: "positive" as const },
-              { label: "Survival Months",  value: "8 months", icon: "🛡️", accent: "neutral"  as const },
+              { label: "Survival Months",  value: survivalMonths, icon: "🛡️", accent: "neutral"  as const },
             ].map((item) => (
               <SummaryCard key={item.label} label={item.label} value={item.value} icon={item.icon} accent={item.accent} />
             ))}
