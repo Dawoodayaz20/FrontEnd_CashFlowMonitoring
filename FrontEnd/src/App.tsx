@@ -9,6 +9,7 @@ import SettingsPage from './pages/SettingsPage/settingsPage';
 import ProfilePage from './pages/ProfilePage/profilePage';
 import ChatLayout from './pages/FlowManagerPage/ChatLayout';
 import AppLayout from './AppLayout';
+import { ChatContextProvider } from './pages/FlowManagerPage/ChatContext';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './store/useAuthStore';
 
@@ -43,6 +44,7 @@ function App() {
         <Routes>
           <Route path='/' element={user ? <Navigate to="/dashboard" /> : <Auth />} />
           <Route element={<ProtectedLayout />}>
+          <ChatContextProvider>
             <Route path="/dashboard"element={<Dashboard />} />
             <Route path="/income"element={<TransactionPage type="income" />} />
             <Route path="/expense"element={<TransactionPage type="expense" />} />
@@ -51,6 +53,7 @@ function App() {
             <Route path="/settings"  element={<SettingsPage />} />
             <Route path="/profile"   element={<ProfilePage />} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
+          </ChatContextProvider>
           </Route>
         </Routes>
   )
