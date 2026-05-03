@@ -45,6 +45,8 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
   const { user } = useAuthStore();
 
   useEffect(() => {
+    if(!user) return;
+
     fetchSessions().then((data) => {
         if (data && data.length > 0) {
             setSessions(data);
@@ -57,7 +59,7 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
             console.log("NO Sessions!")
         }
     });
-  }, []);
+  }, [user]);
 
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
