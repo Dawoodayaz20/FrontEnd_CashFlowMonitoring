@@ -1,4 +1,4 @@
-import type { Message } from "../pages/FlowManagerPage/ChatContext";
+import type { Message } from "../pages/FlowManagerPage/ChatContextTypes";
 
 export const fetchSessions = async () => {
     try{
