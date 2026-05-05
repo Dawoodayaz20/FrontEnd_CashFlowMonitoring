@@ -224,7 +224,7 @@ const Dashboard: React.FC = () => {
 
 
   return (
-    <div className="flex w-full h-screen bg-gray-50 font-sans">
+    <div className="bg-gray-50 font-sans">
 
       {/* ── Main Content ─────────────────────────────────────────────────────── */}
       <main className="flex-1 overflow-y-auto">
