@@ -6,6 +6,9 @@ import { useChat } from "./ChatContext";
 import { v4 as uuidv4 } from "uuid";
 import { generateTitle } from "../../fetchRequests/fetchAgent";
 
+interface FlowManagerProps {
+  onMenuClick: () => void;
+}
 
 const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
   const isBot = message.role === "assistant";
@@ -44,7 +47,7 @@ const QuickAction: React.FC<{ label: string; onClick: () => void }> = ({ label, 
  
 // ─── Main Component ───────────────────────────────────────────────────────────
  
-const FlowManagerPage: React.FC = () => {
+const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
   const { user } = useAuthStore();
   const { messages, addMessage, text, setText, activeSessionId, updateSessionTitle } = useChat();
  
