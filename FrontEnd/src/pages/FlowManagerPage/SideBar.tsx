@@ -71,7 +71,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-60 min-w-[240px] bg-gray-50 border-r border-gray-100 flex flex-col h-screen">
+    <aside className="w-60 min-w-[240px] bg-gray-50 border-r border-gray-100 flex flex-col h-full">
       {/* Header */}
       <div className="px-4 pt-5 pb-3 border-b border-gray-100">
         <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-3">

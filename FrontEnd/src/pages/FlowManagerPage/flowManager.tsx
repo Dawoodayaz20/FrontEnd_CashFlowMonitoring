@@ -112,7 +112,7 @@ const FlowManagerPage: React.FC = () => {
     if (!activeSessionId) return null;
  
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-full bg-gray-50">
       {/* ── Chat Messages Area ────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="max-w-4xl mx-auto">
