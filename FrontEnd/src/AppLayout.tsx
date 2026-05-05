@@ -27,7 +27,7 @@ const NAV_ITEMS = [
   { label: "Income",    path: "/income",    icon: "💰"  },
   { label: "Expense",   path: "/expense",   icon: "💸"  },
   { label: "Forecast",  path: "/forecast",  icon: "📈"  },
-  { label: "Flow Monitor",  path: "/flowAI",  icon: "🤖"  },
+  { label: "Flow Manager",  path: "/flowAI",  icon: "🤖"  },
   { label: "Settings",  path: "/settings",  icon: "⚙️"  },
   { label: "Profile",   path: "/profile",   icon: "👤"  },
 ];
@@ -39,7 +39,7 @@ const PAGE_TITLES: Record<string, { title: string; sub: string }> = {
   "/income":    { title: "Income",            sub: "Manage your income"    },
   "/expense":   { title: "Expenses",          sub: "Track your spending"   },
   "/forecast":  { title: "Forecast",          sub: "Future projections"    },
-  "/flowAI":  { title: "Flow Monitor",          sub: "Flow Monitoring Agent"    },
+  "/flowAI":  { title: "Flow Manager",          sub: "Flow Managing Agent"    },
   "/settings":  { title: "Settings",          sub: "App preferences"       },
   "/profile":   { title: "Profile",           sub: "Your account"          },
 };
