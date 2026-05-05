@@ -1,9 +1,8 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import { useContext, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import useAuthStore from "../../store/useAuthStore";
 import { createSession, fetchSessionMessages, fetchSessions, saveMessage, updateTitle, deleteSession } from "../../fetchRequests/fetchChats";
-import type { Message, Session, ChatContextType, ProviderType } from "./ChatContextTypes";
+import type { Message, Session, ProviderType } from "./ChatContextTypes";
 import { ChatContext } from "./ChatContextTypes";
 
 
