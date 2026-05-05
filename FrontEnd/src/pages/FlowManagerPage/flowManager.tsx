@@ -116,6 +116,15 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
  
   return (
     <div className="flex flex-col h-full bg-gray-50">
+
+      {/* Mobile top bar */}
+      <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 shrink-0">
+        <button onClick={onMenuClick} className="text-gray-500 hover:text-teal-600 transition">
+          ☰
+        </button>
+        <span className="text-sm font-semibold text-gray-700">Flow Manager</span>
+      </div>
+
       {/* ── Chat Messages Area ────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="max-w-4xl mx-auto">
