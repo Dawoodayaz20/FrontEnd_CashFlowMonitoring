@@ -80,9 +80,13 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
     setText("");
 
     if(messages.length === 2){
-      await generateTitle(content).then((title) => {
+      try{
+        await generateTitle(content).then((title) => {
         updateSessionTitle(activeSessionId, title);
-      });
+        })
+      } catch(error){
+        console.log(error);
+      }
     }
 
     try {
