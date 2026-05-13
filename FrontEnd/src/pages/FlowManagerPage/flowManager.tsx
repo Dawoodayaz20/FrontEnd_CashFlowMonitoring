@@ -69,6 +69,8 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !activeSessionId) return;
  
+    const isFirstUserMessage = messages.length === 1;
+
     const userMsg: Message = {
       id: uuidv4(),
       role: "user",
@@ -76,15 +78,14 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
       timestamp: new Date(),
     };
  
-    addMessage(userMsg);
+    await addMessage(userMsg);
     setText("");
 
-    if(messages.length === 2){
-      try{
-        await generateTitle(content).then((title) => {
+    if (isFirstUserMessage) {
+      try {
+        const title = await generateTitle(content);
         updateSessionTitle(activeSessionId, title);
-        })
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
     }
