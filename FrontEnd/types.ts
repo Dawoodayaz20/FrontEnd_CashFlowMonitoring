@@ -43,11 +43,11 @@ export interface Transaction {
 
 export interface TransactionForm {
   type: TxType;
-  amount: string;
+  amount: number;
   category: string;
   date: string;
   note: string;
   isRecurring: boolean;
-  frequency: Frequency;
-  endDate: string;
+  frequency: Frequency | null;
+  endDate: string | null;
 }
