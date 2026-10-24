@@ -1,9 +1,23 @@
 import { createContext } from "react";
 import type { ReactNode } from "react";
+import type { TxType, Frequency } from "../../../types";
+
+export type TransactionProposal = {
+  type: TxType
+  amount: number
+  category: string;
+  date: string;
+  recurring: {
+      isRecurring: boolean;
+      frequency: Frequency | null;
+      endDate?: string | null;
+    };
+}
 
 export type Message = {
   id: string;
   role: "assistant" | "user";
+  proposal?: TransactionProposal;
   content: string;
   timestamp: Date;
 };
