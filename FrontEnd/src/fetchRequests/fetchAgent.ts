@@ -30,7 +30,7 @@ export const generateTitle = async function generateChatTitle(userFirstMessage: 
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "model": "nvidia/nemotron-nano-9b-v2:free", // Use a :free model
+        "model": "nvidia/nemotron-3-ultra-550b-a55b:free", // Use a :free model
         "messages": [
           {
             "role": "system",
