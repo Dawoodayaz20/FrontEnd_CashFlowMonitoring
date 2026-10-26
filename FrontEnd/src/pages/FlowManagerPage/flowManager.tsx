@@ -1,10 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import { getResponse } from "../../fetchRequests/fetchAgent";
 import type { Message } from "./ChatContextTypes";
 import { useChat } from "./ChatContext";
 import { v4 as uuidv4 } from "uuid";
 import { generateTitle } from "../../fetchRequests/fetchAgent";
+import ProposalModal from "./ProposalModal";
+import useTransactionStore from "../../store/useTransactionStore";
+import type { TransactionForm } from "../../../types";
+import ReactMarkdown from "react-markdown";
 
 interface FlowManagerProps {
   onMenuClick: () => void;
@@ -26,7 +30,7 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
             ? "bg-white border border-gray-100 text-gray-800 rounded-tl-none"
             : "bg-teal-600 text-white rounded-tr-none"
         }`}>
-          <p className="leading-relaxed">{message.content}</p>
+          <ReactMarkdown>{message.content}</ReactMarkdown>
           <p className={`text-[10px] mt-1.5 font-medium ${isBot ? "text-gray-400" : "text-teal-100"}`}>
             {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </p>
@@ -50,12 +54,16 @@ const QuickAction: React.FC<{ label: string; onClick: () => void }> = ({ label, 
 const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
   const { user } = useAuthStore();
   const { messages, addMessage, text, setText, activeSessionId, updateSessionTitle } = useChat();
- 
+
+  const [activeProposal, setActiveProposal] = useState<TransactionForm | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const userID = user?.id || "";
   const userName = user?.name || "";
   const email = user?.email || "";
  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { fetchTransactions, addTransaction } = useTransactionStore(); 
  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -64,8 +72,8 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
- 
+
+
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !activeSessionId) return;
  
@@ -74,7 +82,7 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
     const userMsg: Message = {
       id: uuidv4(),
       role: "user",
-      content,
+      content: content,
       timestamp: new Date(),
     };
  
@@ -85,7 +93,8 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
       try {
         const title = await generateTitle(content);
         updateSessionTitle(activeSessionId, title);
-      } catch (error) {
+      } 
+      catch (error) {
         console.log(error);
       }
     }
@@ -108,14 +117,48 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
       addMessage({
           id: uuidv4(),
           role: "assistant",
-          content: responseData.data,
+          content: responseData.data.reply,
           timestamp: new Date(),
       });
+      // 2. Check if the agent returned a transaction proposal
+      if (responseData.data.proposal) {
+        setActiveProposal(responseData.data.proposal);
+        setIsModalOpen(true);
+      }
     
       } catch(err){
         console.error(`There was an error connecting to Server: ${err}`)
       }
     };
+
+    // Handler triggered when user clicks "Confirm & Save" inside the Pop-up
+  const handleConfirmTransaction = async (finalProposal: TransactionForm) => {
+    try {
+      // Add transaction using your store/API method
+      const addTrans = await addTransaction(finalProposal);
+
+      if(addTrans.success){
+        // Close pop-up
+        setIsModalOpen(false);
+        setActiveProposal(null);
+
+        // Refetch transaction list
+        fetchTransactions();
+        
+        // Add feedback message in chat
+        addMessage({
+            id: Date.now().toString(),
+            role: "assistant",
+            content: `✅ Transaction saved successfully!`,
+            timestamp: new Date(),
+          },
+        );
+      }
+
+    } catch (err) {
+      console.error("Failed to save transaction:", err);
+    }
+  };
 
     if (!activeSessionId) return null;
  
@@ -139,25 +182,11 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
           <div ref={messagesEndRef} />
         </div>
       </div>
- 
+
       {/* ── Input & Quick Actions ─────────────────────────────────────────── */}
-      <div className="bg-white border-t border-gray-100 p-6 shrink-0">
+      <div className="bg-white border-t border-gray-100 p-2 shrink-0">
         <div className="max-w-4xl mx-auto space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <QuickAction
-              label="📊 Summarize this month"
-              onClick={() => handleSendMessage("Give me a summary of my spending this month.")}
-            />
-            <QuickAction
-              label="📉 How can I save?"
-              onClick={() => handleSendMessage("Show me where I can cut expenses.")}
-            />
-            <QuickAction
-              label="💡 Forecast next month"
-              onClick={() => handleSendMessage("Forecast my cashflow for next month.")}
-            />
-          </div>
- 
+
           <form
             onSubmit={(e) => { e.preventDefault(); handleSendMessage(text); }}
             className="relative flex items-center gap-3"
@@ -185,8 +214,15 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
           </p>
         </div>
       </div>
+      {/* ── Proposal Pop-up Modal ───────────────────────────────────────── */}
+      <ProposalModal
+        isOpen={isModalOpen}
+        proposal={activeProposal}
+        onConfirm={handleConfirmTransaction}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
- 
+
 export default FlowManagerPage;
