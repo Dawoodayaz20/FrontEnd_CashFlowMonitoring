@@ -6,7 +6,7 @@ const API_URL = `/api/transactions`;
 // ─── Helper: shape form data → API payload ────────────────────────────────────
 const toPayload = (form: TransactionForm) => ({
   type: form.type,
-  amount: parseFloat(form.amount),
+  amount: form.amount,
   category: form.category,
   note: form.note,
   date: form.date,
@@ -24,7 +24,7 @@ interface TransactionState {
   error: string | null;
 
   fetchTransactions: (type?: TxType) => Promise<void>;
-  addTransaction: (form: TransactionForm) => Promise<void>;
+  addTransaction: (form: TransactionForm) => Promise<{ success: boolean; message?: string }>;
   updateTransaction: (id: string, form: TransactionForm) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
 }
@@ -63,12 +63,15 @@ const useTransactionStore = create<TransactionState>((set, get) => ({
         body: JSON.stringify(toPayload(form)),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message || "Failed to add transaction");
 
       // Refetch to sync with DB
       await get().fetchTransactions(form.type);
+      return { success: true, message: "Transaction added successfully" };
+
     } catch (err: any) {
       set({ error: err.message, loading: false });
+      return { success: false, message: err.message || "An error occurred" };
     }
   },
 
