@@ -6,19 +6,20 @@ import useTransactionStore from "./store/useTransactionStore";
 import useAuthStore from "./store/useAuthStore";
 import { getInitials } from "./pages/ProfilePage/profilePage";
 import useSettingsStore from "./store/useSettingsStore";
+import type { TransactionForm } from "../types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface TransactionForm {
-  type: "income" | "expense";
-  amount: string;
-  category: string;
-  date: string;
-  note: string;
-  isRecurring: boolean;
-  frequency: "weekly" | "monthly" | "yearly";
-  endDate: string;
-}
+// interface TransactionForm {
+//   type: "income" | "expense";
+//   amount: string;
+//   category: string;
+//   date: string;
+//   note: string;
+//   isRecurring: boolean;
+//   frequency: "weekly" | "monthly" | "yearly";
+//   endDate: string;
+// }
 
 // ─── Nav Config ───────────────────────────────────────────────────────────────
 

@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from "react";
 import useFormatters from "../../useFormatters";
+import type { TransactionForm,  } from "../../../types";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TransactionType = "income" | "expense";
 type Frequency = "weekly" | "monthly" | "yearly";
-
-interface TransactionForm {
-  type: TransactionType;
-  amount: string;
-  category: string;
-  date: string;
-  note: string;
-  isRecurring: boolean;
-  frequency: Frequency;
-  endDate: string;
-}
 
 interface AddTransactionModalProps {
   isOpen: boolean;
@@ -51,13 +41,13 @@ useEffect(() => {
 
   const [form, setForm] = useState<TransactionForm>({
     type: transactType,
-    amount: "",
+    amount: 0,
     category: "",
     date: today,
     note: "",
     isRecurring: false,
-    frequency: "monthly",
-    endDate: "",
+    frequency: null,
+    endDate: null,
     ...initialData,
   });
 
@@ -161,7 +151,9 @@ useEffect(() => {
                 step="0.01"
                 placeholder="0.00"
                 value={form.amount}
-                onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))}
+                onChange={
+                  (e) => setForm((p) => ({ ...p, amount: parseFloat(e.target.value) || 0 }))
+                }
                 className={`w-full pl-8 pr-4 py-3 border rounded-xl text-gray-800 font-semibold text-lg focus:outline-none focus:ring-2 transition ${
                   errors.amount
                     ? "border-rose-400 focus:ring-rose-200"
@@ -263,7 +255,7 @@ useEffect(() => {
                     Frequency
                   </label>
                   <select
-                    value={form.frequency}
+                    value={form.frequency ?? ""}
                     onChange={(e) =>
                       setForm((p) => ({ ...p, frequency: e.target.value as Frequency }))
                     }
@@ -282,7 +274,7 @@ useEffect(() => {
                   </label>
                   <input
                     type="date"
-                    value={form.endDate}
+                    value={form.endDate ?? ""}
                     min={today}
                     onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))}
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-200"
