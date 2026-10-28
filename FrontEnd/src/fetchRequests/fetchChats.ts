@@ -2,7 +2,7 @@ import type { Message } from "../pages/FlowManagerPage/ChatContextTypes";
 
 export const fetchSessions = async () => {
     try{
-        const response = await fetch(`api/chat/history`, {
+        const response = await fetch(`http://localhost:5000/api/chat/history`, {
             method: 'GET',
             credentials: 'include',
             headers: {'Content-type': 'application/json'},       
@@ -23,7 +23,7 @@ export const fetchSessions = async () => {
 
 export const createSession = async (session_id: string, title: string) => {
     try{
-        const response = await fetch(`api/chat/session/new`, {
+        const response = await fetch(`http://localhost:5000/api/chat/session/new`, {
             method: 'POST',
             credentials: 'include',
             headers: {'Content-type': 'application/json'},
@@ -42,7 +42,7 @@ export const createSession = async (session_id: string, title: string) => {
 
 export const fetchSessionMessages = async (session_id: string) => {
     try{
-        const response = await fetch(`api/chat/history/${session_id}`, {
+        const response = await fetch(`http://localhost:5000/api/chat/history/${session_id}`, {
             method: 'GET',
             credentials: 'include',
             headers: {'Content-type': 'application/json'},
@@ -59,7 +59,7 @@ export const fetchSessionMessages = async (session_id: string) => {
 
 export const saveMessage = async (session_id: string, msg: Message) => {
     try{
-        const res = await fetch(`api/chat/message`, {
+        const res = await fetch(`http://localhost:5000/api/chat/message`, {
             method: 'POST',
             credentials: 'include',
             headers: {'Content-type': 'application/json'},
@@ -77,7 +77,7 @@ export const saveMessage = async (session_id: string, msg: Message) => {
 
 export const updateTitle = async (session_id: string, title: string) => {
     try{
-        const res = await fetch(`api/chat/session/${session_id}/title`, {
+        const res = await fetch(`http://localhost:5000/api/chat/session/${session_id}/title`, {
             method: 'PATCH',
             credentials: 'include',
             headers: {'Content-type': 'application/json'},
@@ -95,7 +95,7 @@ export const updateTitle = async (session_id: string, title: string) => {
 
 export const deleteSession = async (session_id: string) => {
     try{
-        const res = await fetch(`api/chat/session/${session_id}`, {
+        const res = await fetch(`http://localhost:5000/api/chat/session/${session_id}`, {
             method: 'DELETE',
             credentials: 'include',
             headers: {'Content-type': 'application/json'},
