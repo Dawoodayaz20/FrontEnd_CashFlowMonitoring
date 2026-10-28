@@ -1,3 +1,5 @@
+import type { GetResponseResult, StreamEvent } from "../pages/FlowManagerPage/agent.types";
+
 export const getResponse = async (text: string, userID: string, userName: string, email: string, activeSessionId: string) => {
 
     try{
@@ -20,6 +22,56 @@ export const getResponse = async (text: string, userID: string, userName: string
         return { success: false, error: "network_error", message: "Unable to reach the server." };;
     }
 }
+
+export const getStreamResponse = async (
+  text: string, userID: string, userName: string,
+  email: string, activeSessionId: string,
+  onEvent: (e: StreamEvent) => void
+): Promise<GetResponseResult>  => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_FLOWAGENT_API}`, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ question: text, userID, user_name: userName, email, session_id: activeSessionId }),
+    });
+
+    if (!response.ok || !response.body) {
+      return { success: false, error: "server_error", message: "Server error." };
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let final: Extract<StreamEvent, { type: "final" }> | null = null;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop() ?? ""; // keep the incomplete tail for the next chunk
+
+      for (const part of parts) {
+        if (!part.startsWith("data: ")) continue;
+        const event = JSON.parse(part.slice(6)) as StreamEvent;
+        onEvent(event);
+
+        if (event.type === "error") {
+          return { success: false, error: event.code, message: event.message };
+        }
+        if (event.type === "final") final = event;
+      }
+    }
+
+    if (!final) {
+      return { success: false, error: "stream_ended", message: "The response ended unexpectedly." };
+    }
+    return { success: true, data: { reply: final.reply, proposal: final.proposal } };
+  } catch {
+    return { success: false, error: "network_error", message: "Unable to reach the server." };
+  }
+};
 
 export const generateTitle = async function generateChatTitle(userFirstMessage: string) {
   try{
