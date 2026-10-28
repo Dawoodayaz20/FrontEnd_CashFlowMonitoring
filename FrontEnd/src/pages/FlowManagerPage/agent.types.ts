@@ -12,3 +12,10 @@ export type StreamEvent =
 export type GetResponseResult =
   | { success: true; data: { reply: string; proposal: TransactionForm | null } }
   | { success: false; error: string; message: string };
+
+export interface ProposalModalProps {
+  isOpen: boolean;
+  proposal: TransactionForm | null;
+  onConfirm: (updatedProposal: TransactionForm) => void;
+  onClose: () => void;
+}

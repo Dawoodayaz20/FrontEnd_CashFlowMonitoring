@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { TransactionForm } from "../../../types";
+import type { ProposalModalProps } from "./agent.types";
 
-interface ProposalModalProps {
-  isOpen: boolean;
-  proposal: TransactionForm | null;
-  onConfirm: (updatedProposal: TransactionForm) => void;
-  onClose: () => void;
-}
 
 const ProposalModal: React.FC<ProposalModalProps> = ({
   isOpen,
