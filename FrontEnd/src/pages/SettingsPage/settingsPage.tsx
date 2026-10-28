@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useSettingsStore from "../../store/useSettingsStore";
-import type { Currency, DateFormat, BudgetLimits } from "../../store/useSettingsStore";
+import type { Currency, DateFormat, BudgetLimits } from "./settings.types";
 import useTransactionStore, { clearAllTransactions } from "../../store/useTransactionStore";
 import VerifyAccountModal from '../ProfilePage/verifyAccountModal'
 import useFormatters from "../../useFormatters";
