@@ -224,7 +224,7 @@ const SettingsPage: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  const totalBudget = Object.values(budgets).reduce((s, v) => s + v, 0);
+  const totalBudget = (Object.values(budgets) as number[]).reduce((sum, value) => sum + value, 0);
 
   return (
     <div className="min-h-screen bg-gray-50">

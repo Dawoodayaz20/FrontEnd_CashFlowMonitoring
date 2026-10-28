@@ -79,14 +79,14 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
   );
 };
  
-const QuickAction: React.FC<{ label: string; onClick: () => void }> = ({ label, onClick }) => (
-  <button
-    onClick={onClick}
-    className="px-4 py-2 bg-white border border-gray-200 rounded-full text-xs font-semibold text-gray-600 hover:border-teal-300 hover:text-teal-600 hover:bg-teal-50/50 transition-all shadow-sm"
-  >
-    {label}
-  </button>
-);
+// const QuickAction: React.FC<{ label: string; onClick: () => void }> = ({ label, onClick }) => (
+//   <button
+//     onClick={onClick}
+//     className="px-4 py-2 bg-white border border-gray-200 rounded-full text-xs font-semibold text-gray-600 hover:border-teal-300 hover:text-teal-600 hover:bg-teal-50/50 transition-all shadow-sm"
+//   >
+//     {label}
+//   </button>
+// );
  
 // ─── Main Component ───────────────────────────────────────────────────────────
  

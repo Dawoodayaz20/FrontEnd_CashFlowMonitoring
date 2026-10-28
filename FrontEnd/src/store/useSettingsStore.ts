@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { AppSettings, SettingsState, Currency } from "../pages/SettingsPage/settings.types";
+import type { AppSettings, SettingsState } from "../pages/SettingsPage/settings.types";
 
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
