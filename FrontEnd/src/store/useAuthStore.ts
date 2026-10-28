@@ -1,20 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    createdAt: string
-}
-
-interface AuthState  {
-    user: User | null;
-    email: User | null;
-    setUser: (user: User) => void;
-    clearUser: () => void;
-    setEmail: (email: User) => void;
-}
+import type { AuthState } from '../authentication/auth.types';
 
 const useAuthStore = create<AuthState>()(
   persist(

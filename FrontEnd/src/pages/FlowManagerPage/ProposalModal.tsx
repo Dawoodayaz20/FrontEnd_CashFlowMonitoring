@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { TransactionForm } from "../../../types";
 
-// export interface TransactionProposal {
-//   amount: number;
-//   type: "income" | "expense";
-//   category: string;
-//   note: string;
-//   date?: string;
-// }
-
 interface ProposalModalProps {
   isOpen: boolean;
   proposal: TransactionForm | null;
