@@ -1,5 +1,5 @@
 import useSettingsStore from "./store/useSettingsStore";
-import type { Currency, DateFormat } from './store/useSettingsStore';
+import type { Currency, DateFormat } from "./pages/SettingsPage/settings.types";
 
 // ─── Currency Symbol Map ──────────────────────────────────────────────────────
 

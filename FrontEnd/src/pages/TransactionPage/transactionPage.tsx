@@ -253,13 +253,13 @@ const TransactionPage: React.FC<TransactionPageProps> = ({ type }) => {
   const editInitialData: Partial<TransactionForm> | undefined = editingTx
     ? {
         type: editingTx.type,
-        amount: String(editingTx.amount),
+        amount: editingTx.amount,
         category: editingTx.category,
         note: editingTx.note ?? "",
         date: editingTx.date.split("T")[0],
         isRecurring: editingTx.recurring.isRecurring,
         frequency: editingTx.recurring.frequency ?? "monthly",
-        endDate: editingTx.recurring.endDate?.split("T")[0] ?? "",
+        endDate: editingTx.recurring.endDate?.split("T")[0] ?? null,
       }
     : undefined;
 
