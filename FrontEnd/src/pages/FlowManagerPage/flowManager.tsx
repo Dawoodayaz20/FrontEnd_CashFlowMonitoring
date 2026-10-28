@@ -1,18 +1,57 @@
 import React, { useEffect, useRef, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
-import { getResponse } from "../../fetchRequests/fetchAgent";
 import type { Message } from "./ChatContextTypes";
 import { useChat } from "./ChatContext";
 import { v4 as uuidv4 } from "uuid";
-import { generateTitle } from "../../fetchRequests/fetchAgent";
+import { getStreamResponse, generateTitle } from "../../fetchRequests/fetchAgent";
 import ProposalModal from "./ProposalModal";
 import useTransactionStore from "../../store/useTransactionStore";
 import type { TransactionForm } from "../../../types";
 import ReactMarkdown from "react-markdown";
+import type { AgentStatus, StreamEvent } from "./agent.types";
 
 interface FlowManagerProps {
   onMenuClick: () => void;
 }
+
+const TOOL_LABELS: Record<string, string> = {
+  get_transactions: "Looking through your transactions...",
+  get_financial_summary: "Calculating your summary...",
+  get_spending_by_category: "Breaking down your spending...",
+  get_recurring_transactions: "Checking recurring payments...",
+  forecast_balance: "Forecasting your balance...",
+  prepare_transaction: "Preparing a transaction for you...",
+};
+
+const toStatus = (e: StreamEvent): AgentStatus | undefined => {
+  switch (e.type) {
+    case "handoff":
+      return { label: `Handing off to ${e.agent.replace(/_/g, " ")}...` };
+    case "tool_called":
+      return { label: TOOL_LABELS[e.tool] ?? "Working on it..." };
+    case "tool_done":
+      return { label: "Putting it together..." };
+  }
+};
+
+const StatusBubble: React.FC<{ label: string }> = ({ label }) => (
+  <div className="flex justify-start mb-4">
+    <div className="flex max-w-[80%] gap-3">
+      <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm bg-teal-600 text-white">
+        🤖
+      </div>
+      <div className="px-4 py-3 rounded-2xl rounded-tl-none text-sm shadow-sm bg-white border border-gray-100 text-gray-500 flex items-center gap-2">
+        <span className="flex gap-1">
+          {[0, 150, 300].map((d) => (
+            <span key={d} className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce"
+                  style={{ animationDelay: `${d}ms` }} />
+          ))}
+        </span>
+        <span key={label} className="animate-pulse">{label}</span>
+      </div>
+    </div>
+  </div>
+);
 
 const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
   const isBot = message.role === "assistant";
@@ -58,6 +97,8 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
   const [activeProposal, setActiveProposal] = useState<TransactionForm | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [status, setStatus] = useState<AgentStatus>(null);
+
   const userID = user?.id || "";
   const userName = user?.name || "";
   const email = user?.email || "";
@@ -71,7 +112,7 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
  
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, status]);
 
 
   const handleSendMessage = async (content: string) => {
@@ -88,6 +129,7 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
  
     await addMessage(userMsg);
     setText("");
+    setStatus({ label: "Thinking..." });
 
     if (isFirstUserMessage) {
       try {
@@ -100,7 +142,13 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
     }
 
     try {
-      const responseData = await getResponse(content, userID, userName, email, activeSessionId);
+      const responseData = await getStreamResponse(
+        content, userID, userName, email, activeSessionId,
+      (e) => {
+      const s = toStatus(e);
+      if (s) setStatus(s);
+      }
+    );
  
       if (!responseData.success) {
           addMessage({
@@ -128,6 +176,9 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
     
       } catch(err){
         console.error(`There was an error connecting to Server: ${err}`)
+      }
+      finally {
+        setStatus(null);
       }
     };
 
@@ -176,9 +227,11 @@ const FlowManagerPage: React.FC<FlowManagerProps> = ({ onMenuClick }) => {
       {/* ── Chat Messages Area ────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="max-w-4xl mx-auto">
-          {messages.map((msg) => (
+          {/* {messages.map((msg) => (
             <MessageBubble key={msg.id} message={msg} />
-          ))}
+          ))} */}
+          {messages.map((msg) => <MessageBubble key={msg.id} message={msg} />)}
+          {status && <StatusBubble label={status.label} />}
           <div ref={messagesEndRef} />
         </div>
       </div>
