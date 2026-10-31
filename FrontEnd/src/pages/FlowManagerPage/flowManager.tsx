@@ -9,6 +9,7 @@ import useTransactionStore from "../../store/useTransactionStore";
 import type { TransactionForm } from "../../../types";
 import ReactMarkdown from "react-markdown";
 import type { AgentStatus, StreamEvent } from "./agent.types";
+import remarkGfm from "remark-gfm";
 
 interface FlowManagerProps {
   onMenuClick: () => void;
@@ -69,7 +70,16 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
             ? "bg-white border border-gray-100 text-gray-800 rounded-tl-none"
             : "bg-teal-600 text-white rounded-tr-none"
         }`}>
-          <ReactMarkdown>{message.content}</ReactMarkdown>
+          {/* Render Markdown for Bot, plain text for User */}
+          {isBot ? (
+            <div className="prose prose-sm max-w-none text-gray-800 leading-relaxed [&>ul]:list-disc [&>ul]:pl-5">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {message.content}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <p className="leading-relaxed">{message.content}</p>
+          )}
           <p className={`text-[10px] mt-1.5 font-medium ${isBot ? "text-gray-400" : "text-teal-100"}`}>
             {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </p>
