@@ -12,16 +12,30 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
   useEffect(() => {
     if(!user) return;
 
-    fetchSessions().then((data) => {
+    // fetchSessions().then((data) => {
+    //     if (data && data.length > 0) {
+    //         setSessions(data);
+    //         setActiveSessionId(data[0].session_id); // 👈 most recent session
+    //         fetchSessionMessages(data[0].session_id).then((msgs) => {
+    //             if (msgs) setMessagesMap({ [data[0].session_id]: msgs });
+    //         });
+    //     } else {
+    //         // createNewSession(); // 👈 no sessions yet, create first one
+    //         console.log("NO Sessions!")
+    //     }
+    // });
+      fetchSessions().then((data) => {
         if (data && data.length > 0) {
-            setSessions(data);
-            setActiveSessionId(data[0].session_id); // 👈 most recent session
-            fetchSessionMessages(data[0].session_id).then((msgs) => {
-                if (msgs) setMessagesMap({ [data[0].session_id]: msgs });
-            });
+          const sorted = [...data].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          setSessions(sorted);
+          setActiveSessionId(sorted[0].session_id);
+          fetchSessionMessages(sorted[0].session_id).then((msgs) => {
+            if (msgs) setMessagesMap({ [sorted[0].session_id]: msgs });
+          });
         } else {
-            // createNewSession(); // 👈 no sessions yet, create first one
-            console.log("NO Sessions!")
+          console.log("NO Sessions!");
         }
     });
   }, [user]);
