@@ -9,6 +9,10 @@ const ProposalModal: React.FC<ProposalModalProps> = ({
   onConfirm,
   onClose,
 }) => {
+  // ── NEW: Animation control states ──
+  const [isVisible, setIsVisible] = useState(false);
+  const [animationTrigger, setAnimationTrigger] = useState(false);
+
   const [formData, setFormData] = useState<TransactionForm>({
     type: "expense",
     amount: 0,
@@ -21,7 +25,8 @@ const ProposalModal: React.FC<ProposalModalProps> = ({
   });
 
   useEffect(() => {
-    if (proposal) {
+    if (isOpen && proposal) {
+      setIsVisible(true);
       setFormData({
         amount: proposal.amount || 0,
         type: proposal.type || "expense",
@@ -32,10 +37,18 @@ const ProposalModal: React.FC<ProposalModalProps> = ({
         frequency: proposal.frequency || null,
         endDate: proposal.date || null,
       });
+      const timer = setTimeout(() => setAnimationTrigger(true), 10);
+      return () => clearTimeout(timer);
     }
-  }, [proposal]);
+    else {
+      setAnimationTrigger(false);
+      const timer = setTimeout(() => setIsVisible(false), 300); // matches duration-300
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, proposal]);
 
-  if (!isOpen || !proposal) return null;
+  // ── NEW: Guard check using isVisible instead of isOpen ──
+  if (!isVisible || !proposal) return null;
 
   const handleChange = (field: keyof TransactionForm, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -47,12 +60,19 @@ const ProposalModal: React.FC<ProposalModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out ${
+        animationTrigger ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div className="bg-white border border-gray-100 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-        {/* Header */}
+        {/* ── UPDATED: Modal container card with scale and translate transform classes ── */}
         <div
-          className="px-6 py-4 text-white flex items-center justify-between"
-          style={{ background: "linear-gradient(135deg, #0f766e, #14b8a6)" }}
+          className={`bg-white border border-gray-100 rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all duration-300 ease-out ${
+            animationTrigger
+              ? "opacity-100 scale-100 translate-y-0"
+              : "opacity-0 scale-95 translate-y-4"
+          }`}
         >
           <div className="flex items-center gap-2.5">
             <span className="text-xl">💡</span>
