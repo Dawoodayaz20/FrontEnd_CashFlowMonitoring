@@ -48,7 +48,7 @@ export const ChatContextProvider = ({ children }: ProviderType) => {
   const welcomeMessage = (): Message => ({
     id: uuidv4(),
     role: "assistant",
-    content: `Hello ${user?.name || "there"}! I'm your Flow Manager. I can help you analyze your transactions or forecast your budget. What's on your mind?`,
+    content: `Hello ${user?.name || "there"}! I'm your Flow Manager. I can help you add and analyze your transactions or forecast your budget. What's on your mind?`,
     timestamp: new Date(),
   });
 
